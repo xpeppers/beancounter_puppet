@@ -50,7 +50,7 @@ class elasticsearch {
   exec {'add elasticsearch service':
     command => '/sbin/chkconfig --add elasticsearch;
     /sbin/chkconfig elasticsearch on;',
-    require => Package['elasticsearch']
+    require => Exec['elasticsearch-0.19.4.deb'] #Package['elasticsearch']
   }
 
   service { 'elasticsearch':

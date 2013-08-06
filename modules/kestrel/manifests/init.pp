@@ -18,6 +18,7 @@ class kestrel {
   	command => '/usr/bin/unzip /tmp/other-repos/kestrel-2.4.1.zip;
     /bin/cp -r /tmp/other-repos/kestrel-2.4.1 /usr; ',
   	cwd => '/tmp/other-repos',
+    unless => "/usr/bin/test -x /etc/init.d/kestrel",
   	require =>  File['/var/log/kestrel'],    
   } -> 
   file {'/etc/init.d/kestrel':

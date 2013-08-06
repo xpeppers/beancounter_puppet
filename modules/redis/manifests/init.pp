@@ -50,13 +50,13 @@ class redis (
     command => "tar --strip-components 1 -xzf ${redis_pkg}",
     cwd     => $redis_src_dir,
     path    => '/bin:/usr/bin',
-    unless  => "/usr/bin/test -f ${redis_src_dir}/Makefile",
+    unless  => "/usr/bin/test -x /etc/init.d/redis_6379",
   }
   exec { 'install-redis':
     command => "make && make install PREFIX=${redis_bin_dir}",
     cwd     => $redis_src_dir,
     path    => '/bin:/usr/bin',
-    unless  => "/usr/bin/test $(${redis_bin_dir}/bin/redis-server --version | cut -d ' ' -f 1) = 'Redis'",
+    unless  => "/usr/bin/test -x /etc/init.d/redis_6379",
     require => Exec['unpack-redis'],
   }
   exec {'add redis service':

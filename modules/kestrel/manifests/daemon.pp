@@ -4,8 +4,8 @@ class daemon {
   	site => 'http://libslack.org/daemon/download',
   	cwd => '/tmp/other-repos',
   	require => File['/tmp/other-repos'],
-  	unless => '/usr/bin/test -f /tmp/other-repos/daemon-0.6.4.tar.gz',
-  	before => Exec['daemon']
+    before => Exec['daemon'],
+  	unless => '/usr/bin/test -f /usr/local/bin/daemon',
   } 
   # file {'/tmp/other-repos':
   #   ensure      => 'directory',
@@ -17,6 +17,8 @@ class daemon {
   	cd daemon-0.6.4 &&
   	./config &&
   	make && make install PREFIX=/tmp/other-repos/daemon-0.6.4; ',
-  	cwd => '/tmp/other-repos',    
+  	cwd     => '/tmp/other-repos',  
+    require => Exec['daemon-0.6.4.tar.gz'],
+    unless => '/usr/bin/test -f /usr/local/bin/daemon', 
   } 
 }
