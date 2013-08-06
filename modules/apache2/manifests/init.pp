@@ -52,7 +52,7 @@ class apache2 {
 
   exec { 'Installing gem bundler':
     command     => "gem1.9.3 install bundler --version '1.3.5'",
-    unless      => "/usr/bin/test $(gem1.9.3 list --local | grep passenger | cut -d ' ' -f 1) = 'passenger'"
+    unless      => "/usr/bin/test $(gem1.9.3 list --local | grep passenger | cut -d ' ' -f 1) = 'passenger'",
     require     => Exec['Installing gem passenger'],
   }
 
