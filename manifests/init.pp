@@ -15,7 +15,13 @@ user { "vagrant":
     shell => "/bin/bash",
     home => "/home/vagrant",
 }
-
+user { "deploy":
+    ensure => present,
+    shell => "/bin/bash",
+    home => "/home/deploy",
+    gid => '1000',
+    groups => ['root', 'tomcat7']
+}
 
 exec {'/usr/bin/apt-get update':
   before      => Class['elasticsearch'],
