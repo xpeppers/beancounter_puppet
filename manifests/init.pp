@@ -19,9 +19,17 @@ user { "deploy":
     ensure => present,
     shell => "/bin/bash",
     home => "/home/deploy",
+    managehome => true,
     gid => '1000',
     groups => ['root', 'tomcat7']
 }
+ssh_authorized_key{ "deploy": 
+  user => "deploy",
+  ensure => present, 
+  type => "ssh-rsa", 
+  key => "AAAAB3NzaC1yc2EAAAADAQABAAABAQDiGqNDqOUorSKA8o5DpfZiP19DvSOdSRURVlcw3KO2mLwrrGQnHlw1d4GBqNXJy9NtWURG9cvkGWsF4KO/EYiCT8/Oo+lUbO0e5i+zECtKzoDPHqNsl3z/qgWyeldxyO2yDQCPbYzcliqhaYO2htk5tC4VHuuQyHl24GyVEHN/zOKlevraVyj0hTdfGtMv906E5LsGgNgoSfyn9zy3TGN/aIXirLU8oB+57IELTYxJAnPN3iWQZPTr7gIx5kZEoIyavRswytUSQ4b8m0dIZFBHuJrz0BPpdzkYBVMYaEIAjdOyIYBE6Wh2evUxcjab8FdbD28ONeHxT9Lth7b7Plnz", 
+  name => "deploy-public-key" 
+ } 
 
 exec {'/usr/bin/apt-get update':
   before      => Class['elasticsearch'],
