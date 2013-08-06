@@ -31,7 +31,7 @@ class redis (
   	["${redis_pkg_name}"]:
   	site => 'http://redis.googlecode.com/files',
   	cwd => '/tmp/other-repos',
-    unless => "/usr/bin/test -f ${redis_pkg}", 
+    unless => "/usr/bin/test -x /etc/init.d/redis_6379", 
   	require => File['/tmp/other-repos'],
   	before => Exec['unpack-redis']
   }

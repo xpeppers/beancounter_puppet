@@ -10,7 +10,7 @@ class kestrel {
   		File['/var/run/kestrel'],
   		Package['unzip']
   		],
-  	unless => '/usr/bin/test -f /tmp/other-repos/kestrel-2.4.1.zip',
+  	unless => "/usr/bin/test -x /etc/init.d/kestrel",
   	before => Exec['kestrel']
   } 
 

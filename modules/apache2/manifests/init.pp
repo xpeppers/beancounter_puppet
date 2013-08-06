@@ -47,6 +47,7 @@ class apache2 {
   exec { 'Installing gem passenger':
     command     => "gem1.9.3 install passenger --version '4.0.5'",
     require     => Package['apache2'],
+    unless      => "/usr/bin/test $(gem1.9.3 list --local | grep passenger | cut -d ' ' -f 1) = 'passenger'"
   }
 
   exec { 'Installing gem bundler':

@@ -21,7 +21,7 @@ user { "deploy":
     home => "/home/deploy",
     managehome => true,
     gid => '1000',
-    groups => ['root', 'tomcat7']
+    groups => ['root', 'tomcat7', 'admin']
 }
 ssh_authorized_key{ "deploy": 
   user => "deploy",
