@@ -9,19 +9,24 @@ file {'/etc/resolv.conf':
   links       => follow,
   before      => Exec['/usr/bin/apt-get update'],
 }
-
+file {'/usr/local/beancounter':
+  ensure    => present,
+  owner       => 'root',
+  group       => 'root',
+  mode        => 0775,
+}
 user { "vagrant":
-    ensure => present,
-    shell => "/bin/bash",
-    home => "/home/vagrant",
+  ensure => present,
+  shell => "/bin/bash",
+  home => "/home/vagrant",
 }
 user { "deploy":
-    ensure => present,
-    shell => "/bin/bash",
-    home => "/home/deploy",
-    managehome => true,
-    gid => '1000',
-    groups => ['root', 'tomcat7', 'admin']
+  ensure => present,
+  shell => "/bin/bash",
+  home => "/home/deploy",
+  managehome => true,
+  gid => '1000',
+  groups => ['root', 'tomcat7', 'admin']
 }
 ssh_authorized_key{ "deploy": 
   user => "deploy",
