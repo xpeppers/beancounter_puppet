@@ -65,6 +65,10 @@ file { '/home/vagrant/.rvm':
    ensure => 'link',
    target => '/usr/local/rvm',
 } -> #and then
+file { '/home/deploy/.rvm':
+   ensure => 'link',
+   target => '/usr/local/rvm',
+} -> #and then
 rvm_system_ruby {
   'ruby-1.9.3-p429':
     ensure => 'present',
