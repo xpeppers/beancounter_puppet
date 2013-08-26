@@ -35,17 +35,7 @@ class redis (
   	require => File['/tmp/other-repos'],
   	before => Exec['unpack-redis']
   }
-  # exec { 'get-redis-pkg':
-  #   command => "/usr/bin/wget --output-document ${redis_pkg} http://redis.googlecode.com/files/${redis_pkg_name}",
-  #   unless  => "/usr/bin/test -f ${redis_pkg}",
-  #   require => File[$redis_src_dir],
-  # }
 
-  file { 'redis-cli-link':
-    ensure => link,
-    path   => '/usr/local/bin/redis-cli',
-    target => "${redis_bin_dir}/bin/redis-cli",
-  }
   exec { 'unpack-redis':
     command => "tar --strip-components 1 -xzf ${redis_pkg}",
     cwd     => $redis_src_dir,
@@ -53,7 +43,7 @@ class redis (
     unless  => "/usr/bin/test -x /etc/init.d/redis_6379",
   }
   exec { 'install-redis':
-    command => "make && make install PREFIX=${redis_bin_dir}",
+    command => "make -C ${redis_bin_dir} ; make install -C ${redis_bin_dir}",
     cwd     => $redis_src_dir,
     path    => '/bin:/usr/bin',
     unless  => "/usr/bin/test -x /etc/init.d/redis_6379",
