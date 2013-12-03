@@ -30,7 +30,7 @@ DEBUG_OPTS="-XX:ErrorFile=/var/log/$APP_NAME/java_error%p.log"
 # allow a separate file to override settings.
 test -f /etc/sysconfig/kestrel && . /etc/sysconfig/kestrel
 
-JAVA_HOME="/usr/lib/jvm/java-6-openjdk-i386"
+JAVA_HOME="/usr/lib/jvm/<%= @JVM_NAME %>" 
 JAVA_OPTS="-server -Dstage=$STAGE $GC_OPTS $GC_TRACE $GC_LOG $HEAP_OPTS $DEBUG_OPTS"
 
 #pidfile="/var/run/$APP_NAME/$APP_NAME.pid"

@@ -13,7 +13,11 @@ class kestrel {
   	unless => "/usr/bin/test -x /etc/init.d/kestrel",
   	before => Exec['kestrel']
   } 
-
+  if $hardwaremodel == 'x86_64' {
+    $JVM_NAME = 'java-6-openjdk-amd64'
+  } else {
+    $JVM_NAME = 'java-6-openjdk-i386'
+  }
   exec {'kestrel':
   	command => '/usr/bin/unzip /tmp/other-repos/kestrel-2.4.1.zip;
     /bin/cp -r /tmp/other-repos/kestrel-2.4.1 /usr; ',
