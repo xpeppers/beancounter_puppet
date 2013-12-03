@@ -7,20 +7,27 @@ file {'/etc/resolv.conf':
   mode        => 0644,
   content     => "nameserver 8.8.8.8\nnameserver 8.8.4.4\n",
   links       => follow,
-  before      => Exec['/usr/bin/apt-get update'],
+  before      => Exec['apt-get update'],
 }
 file {'/usr/local/beancounter':
-  ensure    => present,
+  ensure    => directory,
   owner       => 'root',
   group       => 'root',
   mode        => 0775,
 }
-user { "vagrant":
-  ensure => present,
-  shell => "/bin/bash",
-  home => "/home/vagrant",
+file { '/sbin/insserv':
+   ensure => 'link',
+   target => '/usr/lib/insserv/insserv',
 }
-user { "deploy":
+user { 'vagrant':
+  ensure => present,
+  shell => '/bin/bash',
+  home => '/home/vagrant',
+}
+group { 'tomcat7':
+  ensure => present
+}
+user { 'deploy':
   ensure => present,
   shell => "/bin/bash",
   home => "/home/deploy",
@@ -36,8 +43,14 @@ ssh_authorized_key{ "deploy":
   name => "deploy-public-key" 
  } 
 
-exec {'/usr/bin/apt-get update':
-  before      => Class['elasticsearch'],
+exec {'apt-get update':
+  command => '/usr/bin/apt-get update --fix-missing',
+  before      => Package['chkconfig'],
+}
+
+package { 'chkconfig':
+  ensure => present,
+  before => Class['elasticsearch']  
 }
 class {'elasticsearch':
   before      => [

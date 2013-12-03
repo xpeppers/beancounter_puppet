@@ -34,12 +34,18 @@ define redis::instance (
     mode    => '0644',
     content => template('redis/etc/redis/redis.conf.erb'),
   }
+  file { "redis_log":
+    ensure  => present,
+    path    => "/var/log/redis_${redis_port}.log",
+    mode    => '0664',
+  }
 
   service { "redis-${redis_port}":
     ensure    => running,
     name      => "redis_${redis_port}",
     enable    => true,
-    require   => [ File["redis_port_${redis_port}.conf"], File["redis-init-${redis_port}"], File["redis-lib-port-${redis_port}"] ],
+    require   => [ File["redis_port_${redis_port}.conf"], File["redis-init-${redis_port}"], 
+                    File["redis-lib-port-${redis_port}"], File["redis_log"] ],
     subscribe => File["redis_port_${redis_port}.conf"],
   }
 }

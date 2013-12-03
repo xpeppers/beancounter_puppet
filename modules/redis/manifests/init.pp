@@ -25,6 +25,10 @@ class redis (
     ensure => directory,
     path   => '/var/lib/redis',
   }
+  file { '6379':
+    ensure => directory,
+    path   => '/var/redis',
+  }
 
 
   download_file{

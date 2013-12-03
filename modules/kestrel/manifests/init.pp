@@ -26,6 +26,11 @@ class kestrel {
     mode   => 755,
     content     => template('kestrel/etc/init.d/kestrel.erb'),
   } ->
+  file {'/usr/kestrel-2.4.1/config/production.scala':
+    ensure      => file,
+    mode   => 644,
+    content     => template('kestrel/usr/kestrel-2.4.1/config/production.scala.erb'),
+  } ->
   exec {'add kestrel service':
   	command => '/sbin/chkconfig --add kestrel;
  		/sbin/chkconfig kestrel on; '
