@@ -23,6 +23,7 @@ user { 'vagrant':
   ensure => present,
   shell => '/bin/bash',
   home => '/home/vagrant',
+  managehome => true,
 }
 group { 'tomcat7':
   ensure => present

@@ -1,5 +1,3 @@
-
-
 class elasticsearch {
   package{ 'openjdk-6-jdk':
     ensure	=> latest,

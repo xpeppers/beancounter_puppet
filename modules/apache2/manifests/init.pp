@@ -2,6 +2,15 @@
 # apache2 - init.pp
 
 class apache2 {
+  if $hardwaremodel == 'x86_64' {
+    $passenger_version = '4.0.27'
+    $template_demo_conf = "demo.conf.64.erb"
+  } else {
+    $passenger_version = "4.0.5"
+    $template_demo_conf = "demo.conf.erb"
+  }
+  $passenger_tar = "passenger-$passenger_version.tar.gz"
+
 
   package {'apache2':
     ensure      => present,
@@ -45,7 +54,7 @@ class apache2 {
   Exec { path => '/bin:/usr/bin:/usr/sbin' }
 
   exec { 'Installing gem passenger':
-    command     => "gem1.9.3 install passenger --version '4.0.5'",
+    command     => "gem1.9.3 install passenger --version '$passenger_version'",
     require     => Package['apache2'],
     unless      => "/usr/bin/test $(gem1.9.3 list --local | grep passenger | cut -d ' ' -f 1) = 'passenger'"
   }
@@ -56,16 +65,16 @@ class apache2 {
     require     => Exec['Installing gem passenger'],
   }
 
-  file { '/var/lib/gems/1.9.1/gems/passenger-4.0.5.tar.gz':
+  file { "/var/lib/gems/1.9.1/gems/$passenger_tar":
     ensure      => present,
-    source      => '/vagrant/files/passenger-4.0.5.tar.gz',
+    source      => "/vagrant/files/$passenger_tar",
     require     => Exec['Installing gem passenger'],
   }
 
   exec { 'Load passenger apache2 module':
       cwd       => '/var/lib/gems/1.9.1/gems/',
-      command   => 'tar zxf passenger-4.0.5.tar.gz',
-      require   => File['/var/lib/gems/1.9.1/gems/passenger-4.0.5.tar.gz'],
+      command   => "tar zxf $passenger_tar",
+      require   => File["/var/lib/gems/1.9.1/gems/$passenger_tar"],
   }
 
   exec { 'Disable default apache site':
@@ -87,7 +96,7 @@ class apache2 {
     owner   => 'www-data',
     group   => 'www-data',
     mode    => '0644',
-    content => template('apache2/etc/apache2/sites-available/demo.conf.erb'),
+    content => template("apache2/etc/apache2/sites-available/$template_demo_conf"),
     require => File['/etc/apache2/ports.conf'],
   }
 

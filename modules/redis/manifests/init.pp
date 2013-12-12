@@ -17,14 +17,14 @@ class redis (
   }
   file { $redis_src_dir:
     ensure => directory,
-  }
+  } ->
   file { '/etc/redis':
     ensure => directory,
-  }
+  } ->
   file { 'redis-lib':
     ensure => directory,
     path   => '/var/lib/redis',
-  }
+  } ->
   file { '6379':
     ensure => directory,
     path   => '/var/redis',
