@@ -7,18 +7,19 @@ class daemon {
     before => Exec['daemon'],
   	unless => '/usr/bin/test -f /usr/local/bin/daemon',
   } 
-  # file {'/tmp/other-repos':
-  #   ensure      => 'directory',
-  #   mode   => 755,
-  # } 
-
   exec {'daemon':
   	command => '/bin/tar xzf daemon-0.6.4.tar.gz &&
   	cd daemon-0.6.4 &&
   	./config &&
-  	make && make install PREFIX=/tmp/other-repos/daemon-0.6.4; ',
+  	make PREFIX=/tmp/other-repos/daemon-0.6.4; ',
   	cwd     => '/tmp/other-repos',  
     require => Exec['daemon-0.6.4.tar.gz'],
+    unless => '/usr/bin/test -f /usr/local/bin/daemon', 
+  } 
+  exec {'daemon install':
+    command => '/usr/bin/make install PREFIX=/tmp/other-repos/daemon-0.6.4;',
+    cwd     => '/tmp/other-repos/daemon-0.6.4',  
+    require => Exec['daemon'],
     unless => '/usr/bin/test -f /usr/local/bin/daemon', 
   } 
 }

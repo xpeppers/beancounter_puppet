@@ -35,7 +35,6 @@ class tomcat7 (
     enable => $enable,
     require => [ 
       Package['tomcat7'],
-      Exec['update-rc'],
     ]
   }   
 
@@ -43,6 +42,9 @@ class tomcat7 (
   exec { 'update-rc':
     command => "/usr/sbin/update-rc.d -f tomcat7 remove; /usr/sbin/update-rc.d tomcat7 defaults 99",
     cwd => "/etc/init.d",
+    require => [
+      Service['tomcat7'],
+    ]
   }
 
 }

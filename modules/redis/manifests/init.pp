@@ -17,26 +17,29 @@ class redis (
   }
   file { $redis_src_dir:
     ensure => directory,
-  } ->
+  } ~>
   file { '/etc/redis':
     ensure => directory,
-  } ->
+  } ~>
   file { 'redis-lib':
     ensure => directory,
     path   => '/var/lib/redis',
-  } ->
-  file { '6379':
+  } ~>
+  file { 'var-redis':
     ensure => directory,
     path   => '/var/redis',
+  } ~>
+  file { '6379':
+    ensure => directory,
+    path   => '/var/redis/6379',
   }
-
 
   download_file{
   	["${redis_pkg_name}"]:
   	site => 'http://redis.googlecode.com/files',
   	cwd => '/tmp/other-repos',
     unless => "/usr/bin/test -x /etc/init.d/redis_6379", 
-  	require => File['/tmp/other-repos'],
+  	require => File['/tmp/other-repos', $redis_src_dir],
   	before => Exec['unpack-redis']
   }
 
