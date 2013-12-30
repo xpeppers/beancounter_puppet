@@ -3,7 +3,7 @@ class elasticsearch {
     ensure	=> latest,
   }
   download_file {
-  	['elasticsearch-0.19.4.deb']:
+  	['elasticsearch-0.90.8.deb']:
   	site => 'http://download.elasticsearch.org/elasticsearch/elasticsearch',
   	cwd => '/tmp/other-repos',
     unless => "/usr/bin/test $(/usr/bin/dpkg -l | grep elasticsearch | cut -d ' ' -f 3) = 'elasticsearch'", 
@@ -18,7 +18,7 @@ class elasticsearch {
   package {'elasticsearch':
   	provider => dpkg,
     ensure   => present,
- 	  source   => '/tmp/other-repos/elasticsearch-0.19.4.deb',    
+ 	  source   => '/tmp/other-repos/elasticsearch-0.90.8.deb',    
   } ~>
   file {'/etc/init.d/elasticsearch':
     ensure      => file,
@@ -48,7 +48,7 @@ class elasticsearch {
   exec {'add elasticsearch service':
     command => '/sbin/chkconfig --add elasticsearch;
     /sbin/chkconfig elasticsearch on;',
-    require => Exec['elasticsearch-0.19.4.deb'] #Package['elasticsearch']
+    require => Exec['elasticsearch-0.90.8.deb'] #Package['elasticsearch']
   }
 
   service { 'elasticsearch':
