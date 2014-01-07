@@ -1,0 +1,69 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+
+  config.vm.define "bc-api" do |bc_api|
+    bc_api.vm.box = "beancounter" 
+
+    bc_api.vm.hostname = "beancounter-api.xpeppers.com"
+    bc_api.vm.network :forwarded_port, guest: 80, host: 8080
+    bc_api.vm.network :private_network, ip: "192.168.10.10"
+
+    bc_api.vm.provider :virtualbox do |vb|
+        # Don't boot with headless mode
+        # vb.gui = true
+    
+        vb.customize ["modifyvm", :id, "--memory", "1024"]
+    end
+
+    bc_api.vm.provision :puppet do |puppet|
+    	 # puppet.options = "--verbose --debug"
+       puppet.module_path 	= "../modules"
+       puppet.manifests_path 	= "manifests"
+       puppet.manifest_file  	= "bc-api.pp"
+    end
+  end
+  config.vm.define "bc-services" do |services|
+    services.vm.box = "beancounter" 
+
+    services.vm.hostname = "beancounter-services.xpeppers.com"
+
+    services.vm.network :private_network, ip: "192.168.10.20"
+
+    services.vm.provider :virtualbox do |vb|
+        # Don't boot with headless mode
+        # vb.gui = true
+    
+        vb.customize ["modifyvm", :id, "--memory", "1024"]
+    end
+
+    services.vm.provision :puppet do |puppet|
+         # puppet.options = "--verbose --debug"
+       puppet.module_path  = "../modules"
+       puppet.manifests_path    = "manifests"
+       puppet.manifest_file     = "bc-services.pp"
+    end
+  end
+  config.vm.define "bc-server" do |server|
+    server.vm.box = "beancounter" 
+
+    server.vm.hostname = "beancounter-server.xpeppers.com"
+
+    server.vm.network :private_network, ip: "192.168.10.30"
+
+    server.vm.provider :virtualbox do |vb|
+        # Don't boot with headless mode
+        # vb.gui = true
+    
+        vb.customize ["modifyvm", :id, "--memory", "2048"]
+    end
+
+    server.vm.provision :puppet do |puppet|
+         # puppet.options = "--verbose --debug"
+       puppet.module_path  = "../modules"
+       puppet.manifests_path    = "manifests"
+       puppet.manifest_file     = "bc-server.pp"
+    end
+  end
+end
