@@ -67,7 +67,7 @@ class apache2 {
 
   file { "/var/lib/gems/1.9.1/gems/$passenger_tar":
     ensure      => present,
-    source      => "/vagrant/files/$passenger_tar",
+    source      => "puppet:///modules/apache2/$passenger_tar",
     require     => Exec['Installing gem passenger'],
   }
 
