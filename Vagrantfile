@@ -4,7 +4,9 @@
 Vagrant.configure("2") do |config|
 
   config.vm.define "local", primary: true do |local|
-    local.vm.box = "beancounter" 
+    local.vm.box = "beancounter"
+    local.vm.box_url = "http://dl.dropbox.com/u/155090965/vagrant-ubuntu_server_12.04LTS_i386.box"
+    local.vm.provision :shell, :inline => "apt-get update -y --fix-missing"
 
     local.vm.hostname = "beancounter-blade.xpeppers.com"
     local.vm.network :forwarded_port, guest: 80, host: 8080
@@ -24,26 +26,25 @@ Vagrant.configure("2") do |config|
     # config.vm.synced_folder "../data", "/vagrant_data"
 
     local.vm.provider :virtualbox do |vb|
-        # Don't boot with headless mode
-        # vb.gui = true
-    
-        vb.customize ["modifyvm", :id, "--memory", "4096"]
+      # Don't boot with headless mode
+      # vb.gui = true
+      vb.customize ["modifyvm", :id, "--memory", "4096"]
     end
 
     local.vm.provision :puppet do |puppet|
-    	 # puppet.options = "--verbose --debug"
-    	 puppet.module_path 	= "modules"
-       puppet.manifests_path 	= "manifests"
-       puppet.manifest_file  	= "init.pp"
+      # puppet.options = "--verbose --debug"
+      puppet.module_path     = "modules"
+      puppet.manifests_path    = "manifests"
+      puppet.manifest_file     = "init.pp"
     end
   end
 
   config.vm.define "aws" do |aws_cloud|
-    aws_cloud.vm.box = "awsbox" 
+    aws_cloud.vm.box = "awsbox"
 
     aws_cloud.vm.hostname = "beancounter-aws.xpeppers.com"
     aws_cloud.vm.provider :aws do |aws, override|
-      aws.access_key_id = ENV['AWS_ACCESS_KEY'] 
+      aws.access_key_id = ENV['AWS_ACCESS_KEY']
       aws.secret_access_key = ENV['AWS_SECRET_KEY']
       aws.keypair_name = "bc-leevia"
       aws.region = "eu-west-1"
@@ -58,9 +59,9 @@ Vagrant.configure("2") do |config|
     end
 
     aws_cloud.vm.provision :puppet do |puppet|
-       puppet.module_path   = "modules"
-       puppet.manifests_path  = "manifests"
-       puppet.manifest_file   = "init.pp"
+      puppet.module_path   = "modules"
+      puppet.manifests_path  = "manifests"
+      puppet.manifest_file   = "init.pp"
     end
   end
 
