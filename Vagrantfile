@@ -38,31 +38,4 @@ Vagrant.configure("2") do |config|
       puppet.manifest_file     = "init.pp"
     end
   end
-
-  config.vm.define "aws" do |aws_cloud|
-    aws_cloud.vm.box = "awsbox"
-
-    aws_cloud.vm.hostname = "beancounter-aws.xpeppers.com"
-    aws_cloud.vm.provider :aws do |aws, override|
-      aws.access_key_id = ENV['AWS_ACCESS_KEY']
-      aws.secret_access_key = ENV['AWS_SECRET_KEY']
-      aws.keypair_name = "bc-leevia"
-      aws.region = "eu-west-1"
-
-      aws.ami = "ami-a0a64fd7"
-      aws.instance_type = "m1.medium"
-      aws.elastic_ip = "54.217.232.252"
-      #aws.security_groups = "bc-wizard-1"
-
-      override.ssh.username = "ubuntu"
-      override.ssh.private_key_path = "~/.ssh/bc-leevia.key"
-    end
-
-    aws_cloud.vm.provision :puppet do |puppet|
-      puppet.module_path   = "modules"
-      puppet.manifests_path  = "manifests"
-      puppet.manifest_file   = "init.pp"
-    end
-  end
-
 end
