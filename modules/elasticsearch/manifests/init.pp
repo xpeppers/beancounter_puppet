@@ -1,5 +1,5 @@
 class elasticsearch {
-  package{ 'openjdk-6-jdk':
+  package{ 'openjdk-7-jdk':
     ensure	=> latest,
   }
   download_file {

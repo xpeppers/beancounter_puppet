@@ -44,10 +44,10 @@ ssh_authorized_key{ "deploy":
 
 exec {'apt-get update':
   command => '/usr/bin/apt-get update --fix-missing',
-  before      => Package['openjdk-6-jdk'],
+  before      => Package['openjdk-7-jdk'],
 }
 
-package {'openjdk-6-jdk':
+package {'openjdk-7-jdk':
   ensure => latest
 }
 #rvm::system_user { vagrant: ; }

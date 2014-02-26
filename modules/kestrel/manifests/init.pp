@@ -14,9 +14,9 @@ class kestrel {
     before => Exec['kestrel']
   }
   if $hardwaremodel == 'x86_64' {
-    $JVM_NAME = 'java-6-openjdk-amd64'
+    $JVM_NAME = 'java-7-openjdk-amd64'
   } else {
-    $JVM_NAME = 'java-6-openjdk-i386'
+    $JVM_NAME = 'java-7-openjdk-i386'
   }
   exec {'kestrel':
     command => '/usr/bin/unzip /tmp/other-repos/kestrel-2.4.1.zip;

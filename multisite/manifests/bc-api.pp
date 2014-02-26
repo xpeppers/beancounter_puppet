@@ -43,7 +43,7 @@ exec {'apt-get update':
   command => '/usr/bin/apt-get update --fix-missing',
   before      => Package['apache2'],
 }
-package{ 'openjdk-6-jdk':
+package{ 'openjdk-7-jdk':
     ensure  => latest,
     before  => Class['tomcat7']
 }
@@ -51,7 +51,7 @@ class {'apache2':
   before 	  => Class['rvm'],
 }
 class { 'tomcat7':
-    jdk => 'openjdk-6-jdk',
+    jdk => 'openjdk-7-jdk',
 }
 
 class { 'rvm': 

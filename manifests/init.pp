@@ -63,7 +63,7 @@ class {'apache2':
   before 	  => Class['rvm'],
 }
 class { 'tomcat7':
-    jdk => 'openjdk-6-jdk',
+    jdk => 'openjdk-7-jdk',
 }
 class { 'kestrel':
   before => Class['tomcat7'] 
