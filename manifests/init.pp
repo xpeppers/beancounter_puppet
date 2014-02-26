@@ -49,6 +49,14 @@ exec {'apt-get update':
   before      => Package['chkconfig'],
 }
 
+package { 'ntp':
+  ensure => present,
+  before => Class['elasticsearch']  
+}
+package { 'ntpdate':
+  ensure => present,
+  before => Class['elasticsearch']  
+}
 package { 'chkconfig':
   ensure => present,
   before => Class['elasticsearch']  
