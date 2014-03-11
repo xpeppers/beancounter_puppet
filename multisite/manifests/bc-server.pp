@@ -40,7 +40,14 @@ exec {'apt-get update':
   command => '/usr/bin/apt-get update --fix-missing',
   before      => Package['chkconfig'],
 }
-
+package { 'ntp':
+  ensure => present,
+  before => Class['elasticsearch']  
+}
+package { 'ntpdate':
+  ensure => present,
+  before => Class['elasticsearch']  
+}
 package { 'chkconfig':
   ensure => present,
   before => Class['elasticsearch']  

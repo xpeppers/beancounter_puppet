@@ -46,7 +46,12 @@ exec {'apt-get update':
   command => '/usr/bin/apt-get update --fix-missing',
   before      => Package['openjdk-7-jdk'],
 }
-
+package { 'ntp':
+  ensure => present
+}
+package { 'ntpdate':
+  ensure => present
+}
 package {'openjdk-7-jdk':
   ensure => latest
 }

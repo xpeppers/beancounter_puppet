@@ -43,6 +43,14 @@ exec {'apt-get update':
   command => '/usr/bin/apt-get update --fix-missing',
   before      => Package['apache2'],
 }
+package { 'ntp':
+  ensure => present,
+  before => Class['elasticsearch']  
+}
+package { 'ntpdate':
+  ensure => present,
+  before => Class['elasticsearch']  
+}
 package{ 'openjdk-7-jdk':
     ensure  => latest,
     before  => Class['tomcat7']
