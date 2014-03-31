@@ -1,0 +1,32 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+
+  config.vm.define "stage" do |aws_cloud|
+    aws_cloud.vm.box = "awsstage"
+
+    aws_cloud.vm.hostname = "stage.beancounter.xpeppers.com"
+    aws_cloud.vm.provider :aws do |aws, override|
+      aws.access_key_id = ENV['AWS_ACCESS_KEY']
+      aws.secret_access_key = ENV['AWS_SECRET_KEY']
+      aws.keypair_name = "stage-bc"
+      aws.region = "eu-west-1"
+
+      # defined in box aws.ami = "ami-8b10e9fc"
+      # defined in box aws.instance_type = "m1.medium"
+      aws.elastic_ip = "54.246.80.182"
+      
+
+      override.ssh.username = "ubuntu"
+      override.ssh.private_key_path = "~/.ssh/stage-bc.pem"
+    end
+
+    aws_cloud.vm.provision :puppet do |puppet|
+      puppet.module_path   = "../modules"
+      puppet.manifests_path  = "manifests"
+      puppet.manifest_file   = "aws.pp"
+    end
+  end
+
+end
