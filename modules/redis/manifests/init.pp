@@ -36,7 +36,7 @@ class redis (
 
   download_file{
   	["${redis_pkg_name}"]:
-  	site => 'http://redis.googlecode.com/files',
+  	site => 'http://download.redis.io/releases/',
   	cwd => '/tmp/other-repos',
     unless => "/usr/bin/test -x /etc/init.d/redis_6379", 
   	require => File['/tmp/other-repos', $redis_src_dir],
