@@ -53,28 +53,15 @@ class apache2 {
 
   Exec { path => '/bin:/usr/bin:/usr/sbin' }
 
-  exec { 'Installing gem passenger':
-    command     => "gem1.9.3 install passenger --version '$passenger_version'",
-    require     => Package['apache2'],
-    unless      => "/usr/bin/test $(gem1.9.3 list --local | grep passenger | cut -d ' ' -f 1) = 'passenger'"
-  }
-
-  exec { 'Installing gem bundler':
-    command     => "gem1.9.3 install bundler --version '1.3.5'",
-    unless      => "/usr/bin/test $(gem1.9.3 list --local | grep passenger | cut -d ' ' -f 1) = 'passenger'",
-    require     => Exec['Installing gem passenger'],
-  }
-
-  file { "/var/lib/gems/1.9.1/gems/$passenger_tar":
+  file { "/usr/local/rvm/gems/ruby-1.9.3-p429/gems/$passenger_tar":
     ensure      => present,
-    source      => "puppet:///modules/apache2/$passenger_tar",
-    require     => Exec['Installing gem passenger'],
+    source      => "puppet:///modules/apache2/$passenger_tar"
   }
 
   exec { 'Load passenger apache2 module':
-      cwd       => '/var/lib/gems/1.9.1/gems/',
+      cwd       => '/usr/local/rvm/gems/ruby-1.9.3-p429/gems',
       command   => "tar zxf $passenger_tar",
-      require   => File["/var/lib/gems/1.9.1/gems/$passenger_tar"],
+      require   => File["/usr/local/rvm/gems/ruby-1.9.3-p429/gems/$passenger_tar"],
   }
 
   exec { 'Disable default apache site':

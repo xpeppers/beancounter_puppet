@@ -6,7 +6,9 @@ Puppet::Type.type(:rvm_gem).provide(:gem) do
   desc "Ruby Gem support using RVM."
 
   has_feature :versionable
-  commands :rvmcmd => "/usr/local/rvm/bin/rvm"
+  has_command(:rvmcmd, '/usr/local/rvm/bin/rvm') do
+    environment :HOME => ENV['HOME']
+  end
 
 
   def ruby_version
@@ -29,6 +31,11 @@ Puppet::Type.type(:rvm_gem).provide(:gem) do
 
     if name = hash[:justme]
       command << name + "$"
+    end
+
+    # use proxy if proxy_url is set
+    if resource[:proxy_url] and !resource[:proxy_url].empty?
+      command << "--http-proxy" << resource[:proxy_url]
     end
 
     list = []
@@ -75,6 +82,11 @@ Puppet::Type.type(:rvm_gem).provide(:gem) do
     command << "-v" << resource[:ensure] if (! resource[:ensure].is_a? Symbol) and useversion
     # Dependencies are now installed by default
     # command << "--include-dependencies"
+
+    # use proxy if proxy_url is set
+    if resource[:proxy_url] and !resource[:proxy_url].empty?
+      command << "--http-proxy" << resource[:proxy_url]
+    end
 
     if source = resource[:source]
       begin

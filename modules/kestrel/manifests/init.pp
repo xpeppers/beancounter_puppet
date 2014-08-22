@@ -8,7 +8,8 @@ class kestrel {
     require => [
         File['/tmp/other-repos'],
         File['/var/run/kestrel'],
-        Package['unzip']
+        Package['unzip'],
+        Package['chkconfig']
         ],
     unless => "/usr/bin/test -x /etc/init.d/kestrel",
     before => Exec['kestrel']

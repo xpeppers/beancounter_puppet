@@ -1,4 +1,7 @@
 class daemon {
+  file { '/tmp/other-repos':
+        ensure => "directory",
+  }
   download_file {
     ['daemon-0.6.4.tar.gz']:
     site => 'http://libslack.org/daemon/download',
