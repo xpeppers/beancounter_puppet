@@ -2,7 +2,7 @@
 
 set -e
 
-cp ~/.ssh/deploy ../modules/beancounter/files/deploy
+ln -s ~/.ssh/deploy ../modules/beancounter/files/deploy
 
 packer-io build -machine-readable | tee packer.out
 imageId=$(cat packer.out | grep 'amazon-ebs: AMIs were created' | cut -d ':' -f 4 | tr -d ' ')
