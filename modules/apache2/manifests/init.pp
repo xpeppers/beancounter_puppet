@@ -51,8 +51,6 @@ class apache2 {
                    ],
   }
 
-  Exec { path => '/bin:/usr/bin:/usr/sbin' }
-
   file { "/usr/local/rvm/gems/ruby-1.9.3-p429/gems/$passenger_tar":
     ensure      => present,
     source      => "puppet:///modules/apache2/$passenger_tar"

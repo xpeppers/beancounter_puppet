@@ -67,6 +67,7 @@ ssh_authorized_key{ "deploy":
 
 package {
   [
+    'git-core',
     'ntp',
     'ntpdate',
     'chkconfig',
@@ -86,29 +87,32 @@ class {'elasticsearch':
   ]
 }
 
-class { 'rvm':
-  version => '1.20.12'
+class ruby {
+  class { 'rvm':
+    version => '1.20.12'
   } ->
-file { '/home/vagrant/.rvm':
-   ensure => 'link',
-   target => '/usr/local/rvm',
-} ->
-file { '/home/deploy/.rvm':
-   ensure => 'link',
-   target => '/usr/local/rvm',
-} ->
-rvm_system_ruby {
-  'ruby-1.9.3-p429':
-    ensure => 'present',
-    default_use => true;
-} ->
-rvm_gem {
-    "ruby-1.9.3-p429/bundler": ensure => '1.3.5';
-    "ruby-1.9.3-p429/passenger": ensure => '4.0.5';
+  file { '/home/vagrant/.rvm':
+    ensure => 'link',
+    target => '/usr/local/rvm',
+  } ->
+  file { '/home/deploy/.rvm':
+    ensure => 'link',
+    target => '/usr/local/rvm',
+  } ->
+  rvm_system_ruby {
+    'ruby-1.9.3-p429':
+      ensure => 'present',
+      default_use => true;
+  } ->
+  rvm_gem {
+      "ruby-1.9.3-p429/bundler": ensure => '1.3.5';
+      "ruby-1.9.3-p429/passenger": ensure => '4.0.5';
+  }
 }
+class { 'ruby': }
 
 class {'apache2':
-  require => Class['rvm']
+  require => Class['ruby']
 }
 
 class { 'tomcat7':
