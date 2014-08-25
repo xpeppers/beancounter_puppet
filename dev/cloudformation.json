@@ -1,0 +1,107 @@
+{
+    "AWSTemplateFormatVersion" : "2010-09-09",
+
+    "Description" : "AWS CloudFormation template for two tier deployment stack",
+
+    "Parameters" : {
+
+        "SSHLocation" : {
+            "Default" : "0.0.0.0/0",
+            "Description" : "The IP address range that can be used to SSH to the EC2 instances",
+            "Type": "String"
+        },
+
+        "KeyName": {
+            "Description" : "Name of an existing EC2 KeyPair to enable SSH access to the instances",
+            "Type": "String"
+        },
+
+        "ImageId" : {
+            "Description" : "AMI id",
+            "Type" : "String"
+        },
+
+        "InstanceType" : {
+            "Default" : "t2.micro",
+            "Description" : "EC2 instance type",
+            "Type" : "String"
+        },
+
+        "WebServerPort" : {
+            "Default" : "8888",
+            "Description" : "port",
+            "Type" : "String"
+        },
+    },
+
+    "Resources" : {
+
+        "ScalingGroup" : {
+            "Type" : "AWS::AutoScaling::AutoScalingGroup",
+            "Properties" : {
+                "AvailabilityZones" : { "Fn::GetAZs" : "" },
+                "LaunchConfigurationName" : { "Ref" : "LaunchConfig" },
+                "MinSize" : "1",
+                "MaxSize" : "1",
+                "LoadBalancerNames" : [ { "Ref" : "ElasticLoadBalancer" } ]
+            }
+        },
+
+        "ScaleUpPolicy" : {
+            "Type" : "AWS::AutoScaling::ScalingPolicy",
+            "Properties" : {
+                "AdjustmentType" : "ChangeInCapacity",
+                "AutoScalingGroupName" : { "Ref" : "ScalingGroup" },
+                "Cooldown" : "1",
+                "ScalingAdjustment" : "1"
+            }
+        },
+
+        "LaunchConfig" : {
+            "Type" : "AWS::AutoScaling::LaunchConfiguration",
+            "Properties": {
+                "ImageId" : { "Ref" : "ImageId" },
+                "InstanceType"   : { "Ref" : "InstanceType" },
+                "SecurityGroups" : [ {"Ref" : "SecurityGroup"} ],
+                "KeyName"        : { "Ref" : "KeyName" }
+            }
+        },
+
+        "SecurityGroup" : {
+            "Type" : "AWS::EC2::SecurityGroup",
+            "Properties" : {
+                "GroupDescription" : "Enable HTTP access via port 80 and SSH access",
+                "SecurityGroupIngress" : [
+                    {"IpProtocol" : "tcp", "FromPort" : { "Ref" : "WebServerPort" }, "ToPort" : { "Ref" : "WebServerPort" }, "CidrIp" : "0.0.0.0/0"},
+                    {"IpProtocol" : "tcp", "FromPort" : "22", "ToPort" : "22", "CidrIp" : { "Ref" : "SSHLocation"}}
+                ]
+            }
+        },
+
+        "ElasticLoadBalancer" : {
+            "Type" : "AWS::ElasticLoadBalancing::LoadBalancer",
+            "Properties" : {
+                "AvailabilityZones" : { "Fn::GetAZs" : "" },
+                "Listeners" : [ {
+                    "LoadBalancerPort" : "80",
+                    "InstancePort" : { "Ref" : "WebServerPort" },
+                    "Protocol" : "HTTP"
+                } ],
+                "HealthCheck" : {
+                    "Target" : { "Fn::Join" : [ "", ["HTTP:", { "Ref" : "WebServerPort" }, "/"]]},
+                    "HealthyThreshold" : "3",
+                    "UnhealthyThreshold" : "5",
+                    "Interval" : "30",
+                    "Timeout" : "5"
+                }
+            }
+        }
+    },
+
+    "Outputs" : {
+        "URL" : {
+            "Description" : "URL of the website",
+            "Value" :  { "Fn::Join" : [ "", [ "http://", { "Fn::GetAtt" : [ "ElasticLoadBalancer", "DNSName" ]}]]}
+        }
+    }
+}

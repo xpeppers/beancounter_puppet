@@ -16,5 +16,9 @@
       "manifest-file": "../manifests/init.pp",
       "module_paths": ["../modules"]
     }
+    {
+      "type": "shell",
+      "inline": ["cd /opt/beancounter", "mvn clean install -DskipTests"]
+    }
   ]
 }
