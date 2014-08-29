@@ -78,7 +78,7 @@
                     "Protocol" : "HTTP"
                 } ],
                 "HealthCheck" : {
-                    "Target" : { "Fn::Join" : [ "", ["HTTP:", { "Ref" : "WebServerPort" }, "/"]]},
+                    "Target" : { "Fn::Join" : [ "", ["HTTP:", { "Ref" : "WebServerPort" }, "/beancounter_platform"]]},
                     "HealthyThreshold" : "3",
                     "UnhealthyThreshold" : "5",
                     "Interval" : "30",
