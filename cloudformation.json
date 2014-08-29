@@ -28,7 +28,7 @@
         },
 
         "WebServerPort" : {
-            "Default" : "80",
+            "Default" : "8080",
             "Description" : "port",
             "Type" : "String"
         }
@@ -60,7 +60,7 @@
         "SecurityGroup" : {
             "Type" : "AWS::EC2::SecurityGroup",
             "Properties" : {
-                "GroupDescription" : "Enable HTTP access via port 80 and SSH access",
+                "GroupDescription" : "Enable HTTP access via webserver port and SSH access",
                 "SecurityGroupIngress" : [
                     {"IpProtocol" : "tcp", "FromPort" : { "Ref" : "WebServerPort" }, "ToPort" : { "Ref" : "WebServerPort" }, "CidrIp" : "0.0.0.0/0"},
                     {"IpProtocol" : "tcp", "FromPort" : "22", "ToPort" : "22", "CidrIp" : { "Ref" : "SSHLocation"}}
