@@ -1,7 +1,7 @@
 {
     "AWSTemplateFormatVersion" : "2010-09-09",
 
-    "Description" : "AWS CloudFormation template for two tier deployment stack",
+    "Description" : "Beancounter AWS CloudFormation template",
 
     "Parameters" : {
 
@@ -22,16 +22,16 @@
         },
 
         "InstanceType" : {
-            "Default" : "t2.micro",
+            "Default" : "r3.large",
             "Description" : "EC2 instance type",
             "Type" : "String"
         },
 
         "WebServerPort" : {
-            "Default" : "8888",
+            "Default" : "80",
             "Description" : "port",
             "Type" : "String"
-        },
+        }
     },
 
     "Resources" : {
@@ -44,16 +44,6 @@
                 "MinSize" : "1",
                 "MaxSize" : "1",
                 "LoadBalancerNames" : [ { "Ref" : "ElasticLoadBalancer" } ]
-            }
-        },
-
-        "ScaleUpPolicy" : {
-            "Type" : "AWS::AutoScaling::ScalingPolicy",
-            "Properties" : {
-                "AdjustmentType" : "ChangeInCapacity",
-                "AutoScalingGroupName" : { "Ref" : "ScalingGroup" },
-                "Cooldown" : "1",
-                "ScalingAdjustment" : "1"
             }
         },
 
