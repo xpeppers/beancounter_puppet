@@ -14,4 +14,4 @@ aws cloudformation create-stack \
  --profile trentinotv \
  --stack-name Beancounter --template-body "`cat cloudformation.json`" \
  --region eu-west-1 --capabilities="CAPABILITY_IAM" \
- --parameters ParameterKey=KeyName,ParameterValue=beancounter ParameterKey=ImageId,ParameterValue=ami-04c91173
+ --parameters ParameterKey=KeyName,ParameterValue=beancounter ParameterKey=ImageId,ParameterValue=$ImageId
