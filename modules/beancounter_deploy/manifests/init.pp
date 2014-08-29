@@ -34,7 +34,7 @@ class beancounter_deploy {
     logoutput => true
   }
 
-  # Fix beancounter scripts to make deploy work during provisioning
+  #FIXME Fix beancounter scripts to make deploy work during provisioning
   #
   #exec { 'config deploy':
   #  command => 'sed "s|192.168.10.10|localhost|" -i bc-deploy-all-dev.sh',

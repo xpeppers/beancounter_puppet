@@ -78,6 +78,10 @@ class beancounter {
   class { 'tomcat7':
     jdk => 'openjdk-7-jdk',
   }->
-  class { 'apache2': }
+  class { 'apache2': }->
+  exec { 'redirect-on-tomcat':
+    #FIXME until apache is not correctly configured let tomcat handle all the traffic..
+    command => 'sudo iptables -A PREROUTING -t nat -i eth0 -p tcp --dport 80 -j REDIRECT --to-port 8080'
+  }
 }
 
