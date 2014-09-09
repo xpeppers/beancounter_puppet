@@ -25,12 +25,6 @@
             "Default" : "r3.large",
             "Description" : "EC2 instance type",
             "Type" : "String"
-        },
-
-        "WebServerPort" : {
-            "Default" : "8080",
-            "Description" : "port",
-            "Type" : "String"
         }
     },
 
@@ -53,7 +47,17 @@
                 "ImageId" : { "Ref" : "ImageId" },
                 "InstanceType"   : { "Ref" : "InstanceType" },
                 "SecurityGroups" : [ {"Ref" : "SecurityGroup"} ],
-                "KeyName"        : { "Ref" : "KeyName" }
+                "KeyName"        : { "Ref" : "KeyName" },
+                "BlockDeviceMappings": [{
+                   "DeviceName": "/dev/sda1",
+                   "Ebs" : {"VolumeSize": "1024"}
+                }],
+                "UserData" : { "Fn::Base64" : { "Fn::Join" : ["", [
+                    "#!/bin/bash -ex\n",
+                    "resize2fs /dev/sda1\n",
+                    "mount -o remount,size=2G /tmp\n",
+                    ""
+                ]]}}
             }
         },
 
@@ -62,7 +66,9 @@
             "Properties" : {
                 "GroupDescription" : "Enable HTTP access via webserver port and SSH access",
                 "SecurityGroupIngress" : [
-                    {"IpProtocol" : "tcp", "FromPort" : { "Ref" : "WebServerPort" }, "ToPort" : { "Ref" : "WebServerPort" }, "CidrIp" : "0.0.0.0/0"},
+                    {"IpProtocol" : "tcp", "FromPort" : "80", "ToPort" : 80, "CidrIp" : "0.0.0.0/0"},
+                    {"IpProtocol" : "tcp", "FromPort" : "8080", "ToPort" : 8080 , "CidrIp" : "0.0.0.0/0"},
+                    {"IpProtocol" : "tcp", "FromPort" : "5678", "ToPort" : 8080 , "CidrIp" : "0.0.0.0/0"},
                     {"IpProtocol" : "tcp", "FromPort" : "22", "ToPort" : "22", "CidrIp" : { "Ref" : "SSHLocation"}}
                 ]
             }
@@ -72,13 +78,25 @@
             "Type" : "AWS::ElasticLoadBalancing::LoadBalancer",
             "Properties" : {
                 "AvailabilityZones" : { "Fn::GetAZs" : "" },
-                "Listeners" : [ {
-                    "LoadBalancerPort" : "80",
-                    "InstancePort" : { "Ref" : "WebServerPort" },
-                    "Protocol" : "HTTP"
-                } ],
+                "Listeners" : [
+                    {
+                        "LoadBalancerPort" : "80",
+                        "InstancePort" : "8080",
+                        "Protocol" : "HTTP"
+                    },
+                    {
+                        "LoadBalancerPort" : "8080",
+                        "InstancePort" : "8080",
+                        "Protocol" : "HTTP"
+                    },
+                    {
+                        "LoadBalancerPort" : "5678",
+                        "InstancePort" : "5678",
+                        "Protocol" : "HTTP"
+                    }
+                ],
                 "HealthCheck" : {
-                    "Target" : { "Fn::Join" : [ "", ["HTTP:", { "Ref" : "WebServerPort" }, "/beancounter-platform"]]},
+                    "Target" : { "Fn::Join" : [ "", ["HTTP:", 8080, "/"]]},
                     "HealthyThreshold" : "3",
                     "UnhealthyThreshold" : "5",
                     "Interval" : "30",
